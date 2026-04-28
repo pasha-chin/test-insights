@@ -10,7 +10,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms) );
 
 async function vkRequest(method, params = {},retries = 3 ) {
 
-    await sleep(334);
+    // await sleep(334);
 
     console.log('URL:', `${VK_API_URL}/${method}`);
 
@@ -78,6 +78,8 @@ async function fetchPostsFromOffset( ownerId, from, to, startOffset, totalCount 
     let allPosts = [];
 
     while( offset < totalCount ) {
+
+        await sleep(334);
         const batch = await vkRequest('wall.get', {
             owner_id: ownerId,
             count: BATCH_SIZE,
@@ -106,6 +108,8 @@ async function fetchPostsLinear(ownerId, from, to, totalCount) {
     let allPosts = [];
 
     while( offset < totalCount ) {
+
+        await sleep(334);
         const batch = await vkRequest('wall.get', {
             owner_id: ownerId,
             count: BATCH_SIZE,
@@ -113,6 +117,13 @@ async function fetchPostsLinear(ownerId, from, to, totalCount) {
         });
 
         const posts = batch.items;
+
+        if( posts.length === 0 || posts[posts.length - 1].date < from ) {
+            const filtered = posts.filter(p => p.date >= from && p.date <= to);
+            allPosts.push(...filtered);
+            break;
+        }
+
         const filtered = posts.filter( p => p.date >= from && p.date <= to );
         allPosts.push(...filtered);
 
@@ -128,6 +139,9 @@ async function findStartOffset( ownerId, targetTimestamp, totalCount ) {
 
     while( low < high ) {
         const mid = Math.floor( (low + high) / 2);
+
+        await sleep(334);
+
         const res = await vkRequest('wall.get', {
             owner_id: ownerId,
             count: 1,
