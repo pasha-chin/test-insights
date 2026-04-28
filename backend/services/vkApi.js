@@ -35,10 +35,12 @@ async function getWallPosts(ownerId, count = 100){
     const res = await vkRequest(
         'wall.get',
         {
-            owner_id: ownerId,
-            count
+            ownerId: ownerId,
+            count,
+            filter: 'all'
         }
     );
+
     return res.items;
 }
 
