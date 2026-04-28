@@ -1,5 +1,6 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import { logger } from './logger.js';
 dotenv.config();
 
 const VK_API_URL = process.env.VK_API_URL;
@@ -10,27 +11,46 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms) );
 
 async function vkRequest(method, params = {},retries = 3 ) {
 
-    // await sleep(334);
-
     console.log('URL:', `${VK_API_URL}/${method}`);
 
-    const { data } = await axios.get(`${VK_API_URL}/${method}`, {
-        params: {
-            ...params,
-            access_token: TOKEN,
-            v: VK_API_VERSION,
-        },
-    });
+    try {
+        const start = Date.now();
+        const {data} = await axios.get(`${VK_API_URL}/${method}`, {
+            timeout: 5000,
+            params: {
+                ...params,
+                access_token: TOKEN,
+                v: VK_API_VERSION,
+            },
+        });
+        const duration = Date.now() - start;
+        logger.logRequest(method, duration);
 
-    if( data.error ) {
-        if( data.error.error_code === 6 && retries > 0 ) {
-            await sleep(1000);
+        if (data.error) {
+            if (data.error.error_code === 6 && retries > 0) {
+                await sleep(1000);
+                return vkRequest(method, params, retries - 1);
+            }
+            const err = new Error(`VK API Error: ${data.error.error_msg}`);
+            logger.logError(method, err);
+            throw err;
+        }
+
+        return data.response;
+    }
+    catch(err) {
+        if( err.response?.status === 429 && retries > 0 ) {
+            await sleep(2000);
             return vkRequest(method, params, retries - 1);
         }
-        throw new Error(`VK API Error: ${data.error.error_msg}`);
-    }
 
-    return data.response;
+        if( err.code === 'ECONNABORTED' || err.code === 'ECONNREFUSED' ) {
+            const netErr = new Error(`VK API недоступен: ${err.code}`);
+            logger.logError(method, netErr);
+            throw netErr;
+        }
+        throw err;
+    }
 }
 
 async function getGroupInfo(groupId) {

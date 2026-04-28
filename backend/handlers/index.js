@@ -1,13 +1,14 @@
 import { getGroupInfo, getWallPosts, normalizeGroupId } from '../services/vkApi.js';
 import { analyzeWallPosts } from '../services/analytics.js';
 import { getCache, setCache } from '../services/cache.js';
+import { logger } from '../services/logger.js';
 
 
 async function analyzeHandler(req, res) {
     const { groupId, from, to } = req.body;
 
     if( !groupId || !from || !to ) {
-        return res.status(400).json({ error: 'groupId обязателен' });
+        return res.status(400).json({ error: 'groupId, from, to обязательны' });
     }
 
     try {
@@ -34,6 +35,7 @@ async function analyzeHandler(req, res) {
     }
 }
 async function healthHandler(req, res) {
+    logger.info('GET /health');
     res.json({ status: 'ok', uptime: process.uptime() });
 }
 
