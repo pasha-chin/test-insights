@@ -1,4 +1,3 @@
-// services/analytics.js
 
 function detectPostType(post) {
     const attachments = post.attachments || [];
@@ -81,7 +80,7 @@ function analyzeWallPosts(posts) {
     };
 }
 
-module.exports = {
+export  {
     detectPostType,
     calcEngagement,
     mapPost,

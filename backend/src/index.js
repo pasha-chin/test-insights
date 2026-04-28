@@ -1,20 +1,18 @@
-const express = require('express');
-require('dotenv').config();
-const cors = require('cors');
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import { healthHandler, analyzeHandler  } from '../handlers/index.js';
+dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use( cors() );
 app.use( express.json() );
 
-app.get('/health', (req, res) => {
-    res.json({ status: 'ok', uptime: process.uptime() });
-});
+app.get('/health', healthHandler );
 
-app.post('/analyze', (req, res) => {
-    const { groupId, from, to } = req.body;
-    res.json({ message: 'Анализ запущен', groupId, from, to });
-});
+app.post( '/analyze', analyzeHandler);
 
 app.get('/report/:groupId', (req, res) => {
     const { groupId } = req.params;
