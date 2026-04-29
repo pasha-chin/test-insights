@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { ArrowRight } from "../../icons/ArrowRight";
+import { IconArrowRight } from "../../icons/IconArrowRight.jsx";
 export default function AnalyzeForm() {
 
     const [community, setCommunity] = useState('');
@@ -8,7 +9,8 @@ export default function AnalyzeForm() {
     const [dateTo, setDateTo] = useState('2026-04-16');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [report, setReport] = useState(null);
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
 
@@ -16,7 +18,6 @@ export default function AnalyzeForm() {
         e.preventDefault();
 
         setError(null);
-        setReport(null);
         setLoading(true);
 
         try {
@@ -36,9 +37,13 @@ export default function AnalyzeForm() {
             }
 
             const data = await response.json();
-            setReport(data);
-
-            console.log('report:', data);
+            navigate(`/dashboard/${community}`, {
+                state: {
+                    data,
+                    from: dateFrom,
+                    to: dateTo
+                }
+            });
 
         } catch (err) {
             setError(err.message);
@@ -75,17 +80,15 @@ export default function AnalyzeForm() {
 
                 <div className="flex flex-wrap items-center gap-2 mb-8">
                     <span className="text-xs mr-1" style={{color: 'var(--ink-soft)'}}>Попробуйте:</span>
-                    <button className="chip text-sm px-3 py-1 rounded-full font-medium"
+                    <button type="button" onClick={() => setCommunity('curlrocknroll')}
+                            className="chip text-sm px-3 py-1 rounded-full font-medium"
+                            style={{background: 'var(--curlshop)', color: '#ffffff'}}>
+                        curlrocknroll
+                    </button>
+                    <button type="button" onClick={() => setCommunity('vkvideo')}
+                            className="chip text-sm px-3 py-1 rounded-full font-medium"
                             style={{background: 'var(--peach)', color: '#8b3a1a'}}>
-                        durov
-                    </button>
-                    <button className="chip text-sm px-3 py-1 rounded-full font-medium"
-                            style={{background: 'var(--lavender)', color: '#4a3b6b'}}>
-                        vk
-                    </button>
-                    <button className="chip text-sm px-3 py-1 rounded-full font-medium"
-                            style={{background: 'var(--mint)', color: '#2d6a4f'}}>
-                        mdk
+                        vkvideo
                     </button>
                 </div>
 
@@ -137,7 +140,7 @@ export default function AnalyzeForm() {
                 <button
                     className="btn-primary w-full text-white font-medium py-4 rounded-2xl flex items-center justify-center gap-2 group">
                     <span className="text-base">Анализировать</span>
-                    <ArrowRight />
+                    <IconArrowRight />
                 </button>
 
             </form>

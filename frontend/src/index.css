@@ -4,16 +4,25 @@
     --cream: #faf6f0;
     --peach: #ffd9c4;
     --peach-deep: #ff9d76;
+    --peach-darker: #e07a52;
     --lavender: #e8e0f5;
+    --lavender-deep: #b8a5d9;
+    --curlshop:#E74225;
     --mint: #d4ebe0;
+    --mint-deep: #7cc4a3;
+    --sky: #d4e4f5;
+    --sky-deep: #6ba3d9;
     --rose: #f5d6d6;
+    --rose-deep: #d99090;
     --ink: #2a2520;
     --ink-soft: #6b5f55;
+    --ink-faint: #a89b8d;
     --line: #ebe2d4;
+    --gold: #d4b06a;
 }
 
-html {
-    overflow: hidden;
+html, body {
+    height: 100%;
 }
 
 body {
@@ -26,6 +35,10 @@ body {
 .font-display {
     font-family: 'Fraunces', serif;
     font-optical-sizing: auto;
+}
+
+.font-mono {
+    font-family: 'JetBrains Mono', monospace;
 }
 
 /* Зернистая текстура поверх фона */
@@ -98,6 +111,16 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     transform: translateY(0);
 }
 
+.btn-ghost {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--line);
+    transition: all 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.85);
+    transform: translateY(-1px);
+}
+
 /* Поля ввода */
 .field {
     background: rgba(255, 255, 255, 0.6);
@@ -140,4 +163,199 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     bottom: -8px;
     height: 8px;
     background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 8' preserveAspectRatio='none'><path d='M0,4 Q75,0 150,4 T300,4' stroke='%23ff9d76' stroke-width='2' fill='none' stroke-linecap='round'/></svg>") no-repeat center / 100% 100%;
+}
+
+/* Строка поста в топе */
+.post-row {
+    position: relative;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+    transition: background 0.25s ease;
+}
+.post-row:last-child { border-bottom: none; }
+.post-row:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+.post-row::before {
+    content: '';
+    position: absolute;
+    left: -1.5rem;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 70%;
+    background: var(--peach-deep);
+    border-radius: 2px;
+    transition: transform 0.25s ease;
+}
+.post-row:hover::before { transform: translateY(-50%) scaleY(1); }
+
+/* Ранг поста */
+.rank {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 22px;
+    min-width: 56px;
+}
+.rank-1 { color: var(--peach-darker); }
+.rank-2 { color: var(--gold); }
+.rank-3 { color: var(--lavender-deep); }
+.rank-other { color: var(--ink-faint); }
+
+/* Метрики */
+.metric {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+}
+
+/* Поля поиска и селект */
+.field {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--line);
+    transition: all 0.25s ease;
+}
+.field:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: #d6c9b3;
+}
+.field:focus {
+    background: #ffffff;
+    border-color: var(--peach-deep);
+    box-shadow: 0 0 0 4px rgba(255, 157, 118, 0.15);
+    outline: none;
+}
+
+/* Чипы для типа контента */
+.chip-type {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+}
+.chip-photo { background: var(--sky); color: #2a5a8c; }
+.chip-video { background: var(--peach); color: #8b3a1a; }
+.chip-multi { background: var(--mint); color: #2d6a4f; }
+.chip-text  { background: var(--lavender); color: #4a3b6b; }
+
+/* Таблица */
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.data-table thead th {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    text-align: left;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--line);
+    background: rgba(244, 236, 223, 0.4);
+    white-space: nowrap;
+}
+.data-table thead th:first-child { border-top-left-radius: 14px; padding-left: 1.5rem; }
+.data-table thead th:last-child { border-top-right-radius: 14px; padding-right: 1.5rem; text-align: right; }
+.data-table thead th.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+.data-table thead th.sortable:hover { color: var(--ink); }
+.sort-indicator {
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 10px;
+    color: var(--ink-faint);
+    transition: color 0.2s;
+}
+.sort-indicator.active { color: var(--peach-deep); }
+
+.data-table tbody tr {
+    transition: background 0.25s ease;
+}
+.data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.6);
+}
+.data-table tbody td {
+    padding: 1rem;
+    font-size: 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+}
+.data-table tbody td:first-child { padding-left: 1.5rem; }
+.data-table tbody td:last-child { padding-right: 1.5rem; text-align: right; }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:last-child td:first-child { border-bottom-left-radius: 14px; }
+.data-table tbody tr:last-child td:last-child { border-bottom-right-radius: 14px; }
+
+/* Пагинация */
+.page-btn {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    background: transparent;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+.page-btn:hover { background: rgba(255, 255, 255, 0.6); color: var(--ink); }
+.page-btn.active {
+    background: var(--ink);
+    color: var(--cream);
+    border-color: var(--ink);
+}
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.page-btn:disabled:hover { background: transparent; }
+
+/* Star icon-color */
+.star-engagement {
+    color: var(--peach-deep);
+}
+
+/* Underline-stroke (как в других страницах) */
+.underline-stroke {
+    position: relative;
+    display: inline-block;
+}
+.underline-stroke::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 6px;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 6' preserveAspectRatio='none'><path d='M0,3 Q50,0 100,3 T200,3' stroke='%23ff9d76' stroke-width='2' fill='none' stroke-linecap='round'/></svg>") no-repeat center / 100% 100%;
+}
+
+.block-tag {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+/* Скрываем стандартную стрелку у select и добавляем свою */
+select.field {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'><path d='M3 4.5L6 7.5L9 4.5' stroke='%236b5f55' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
 }

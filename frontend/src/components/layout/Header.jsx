@@ -1,4 +1,12 @@
+import { useLocation, useNavigate  } from 'react-router-dom'
+import { IconArrowLeft } from "../../icons/IconArrowLeft";
 export default function Header() {
+
+    const navigate = useNavigate()
+    const location = useLocation()
+    const isDashboard = location.pathname.startsWith('/dashboard')
+
+
     return (
         <>
             <header className="px-8 py-6 flex items-center justify-between">
@@ -22,10 +30,18 @@ export default function Header() {
                     </div>
                 </div>
 
-                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs"
-                     style={{background: 'rgba(212, 235, 224, 0.6)', color: '#2d6a4f'}}>
-                    <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{background: '#2d6a4f'}}></span>
-                    Сервис работает
+                <div className="flex item-center gap-2">
+                    {isDashboard && (
+                        <button onClick={() => navigate('/')} className="btn-ghost flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium hover:opacity-70 cursor-pointer">
+                            <IconArrowLeft />
+                            Новый поиск
+                        </button>
+                    )}
+                    <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs"
+                         style={{background: 'rgba(212, 235, 224, 0.6)', color: '#2d6a4f'}}>
+                        <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{background: '#2d6a4f'}}></span>
+                        Сервис работает
+                    </div>
                 </div>
             </header>
         </>
