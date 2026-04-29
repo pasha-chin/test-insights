@@ -11,8 +11,6 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms) );
 
 async function vkRequest(method, params = {},retries = 3 ) {
 
-    console.log('URL:', `${VK_API_URL}/${method}`);
-
     try {
         const start = Date.now();
         const {data} = await axios.get(`${VK_API_URL}/${method}`, {
@@ -80,10 +78,8 @@ async function getWallPosts( ownerId, from, to ){
     let offset = 0;
 
     if( totalCount <= 500 ) {
-        // линейный перебор — текущий код
         allPosts = await fetchPostsLinear( ownerId, from, to, totalCount );
     } else {
-        // бинарный поиск — напишем дальше
         const startOffset = await findStartOffset( ownerId, to, totalCount );
         allPosts = await fetchPostsFromOffset( ownerId, from, to, startOffset, totalCount );
     }
