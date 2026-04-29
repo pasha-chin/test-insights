@@ -1,4 +1,60 @@
-function TypeContent() {
+import { Doughnut } from 'react-chartjs-2'
+import { ArcElement } from 'chart.js'
+function TypeContent( {report} ) {
+
+    const types = report?.typeDistribution || {}
+
+    const labels = Object.keys(types)
+    const values = Object.values(types)
+    const total = values.reduce((a, b) => a + b, 0)
+
+    const labelMap = {
+        photo: 'Фото',
+        video: 'Видео',
+        text: 'Текст',
+        link: 'Ссылка',
+        multi: 'Мульти',
+    }
+
+    const colors = ['#6ba3d9', '#7cc4a3', '#ff9d76', '#b8a5d9', '#d99090'];
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '70%',
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: 'rgba(42, 37, 32, 0.95)',
+                titleColor: '#faf6f0',
+                bodyColor: '#faf6f0',
+                padding: 12,
+                cornerRadius: 12,
+                callbacks: {
+                    title: (items) => {
+                        const label = items[0].label
+                        return labelMap[label] || label
+                    },
+                    label: (ctx) => {
+                        const pct = ((ctx.parsed / total) * 100).toFixed(1)
+                        return ` ${ctx.parsed.toLocaleString('ru-RU')} · ${pct}%`
+                    }
+                }
+            }
+        }
+    }
+
+    const data = {
+        labels,
+        datasets: [{
+            data: values,
+            backgroundColor: colors,
+            borderColor: 'rgba(255, 255, 255, 0.7)',
+            borderWidth: 3,
+            hoverOffset: 8,
+            spacing: 2
+        }]
+    }
 
     return (
         <>
@@ -10,7 +66,7 @@ function TypeContent() {
                 <p className="text-sm mb-6" style={{color: 'var(--ink-soft)'}}>распределение публикаций</p>
 
                 <div className="relative" style={{height: '220px'}}>
-                    <canvas id="chart-types"></canvas>
+                    <Doughnut data={data} options={options} />
 
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                         <div className="text-center">
@@ -21,27 +77,17 @@ function TypeContent() {
                 </div>
 
                 <div className="space-y-2.5 mt-6">
-                    <div className="flex items-center justify-between text-sm">
-                                <span className="flex items-center" style={{color: 'var(--ink)'}}>
-                                    <span className="legend-dot" style={{background: 'var(--sky-deep)'}}></span>
-                                    Фото
-                                </span>
-                        <span className="font-mono" style={{color: 'var(--ink-soft)'}}>1 902 · 90%</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                                <span className="flex items-center" style={{color: 'var(--ink)'}}>
-                                    <span className="legend-dot" style={{background: 'var(--mint-deep)'}}></span>
-                                    Мульти
-                                </span>
-                        <span className="font-mono" style={{color: 'var(--ink-soft)'}}>148 · 7%</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                                <span className="flex items-center" style={{color: 'var(--ink)'}}>
-                                    <span className="legend-dot" style={{background: 'var(--peach-deep)'}}></span>
-                                    Видео
-                                </span>
-                        <span className="font-mono" style={{color: 'var(--ink-soft)'}}>64 · 3%</span>
-                    </div>
+                    { labels.map((label, i) => (
+                        <div className="flex items-center justify-between text-sm" key={label}>
+                            <span className="flex items-center" style={{color: 'var(--ink)'}}>
+<                               span className="legend-dot" style={{background: colors[i]}}></span>
+                                {labelMap[label] || label}
+                            </span>
+                            <span className="font-mono" style={{color: 'var(--ink-soft)'}}>
+                              {values[i]} · {Math.round(values[i] / values.reduce((a,b) => a+b, 0) * 100)}%
+                            </span>
+                        </div>
+                    ))}
                 </div>
             </div>
         </>

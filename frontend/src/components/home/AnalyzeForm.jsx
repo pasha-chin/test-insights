@@ -14,7 +14,6 @@ export default function AnalyzeForm() {
 
     const handleSubmit = async (e) => {
 
-        console.log('submit fired');
         e.preventDefault();
 
         setError(null);
@@ -54,6 +53,14 @@ export default function AnalyzeForm() {
 
     return (
         <>
+            {loading && (
+                <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4"
+                     style={{background: 'rgba(var(--bg-rgb, 255,255,255), 0.85)', backdropFilter: 'blur(4px)'}}>
+                    <div className="w-10 h-10 rounded-full border-4 border-t-transparent animate-spin"
+                         style={{borderColor: 'var(--peach-deep)', borderTopColor: 'transparent'}}></div>
+                    <p className="text-sm font-medium" style={{color: 'var(--ink-soft)'}}>Загружаем данные...</p>
+                </div>
+            )}
             <form onSubmit={handleSubmit} className="card rounded-3xl p-7 md:p-9 rise" style={{animationDelay: '0.4s'}}>
 
                 <div className="flex items-baseline justify-between mb-3">

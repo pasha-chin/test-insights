@@ -5,11 +5,9 @@ import {IconChartLineTop} from "../../icons/IconChartLineTop.jsx";
 
 function Cards( { group, report } ) {
 
-    console.log(report?.topPosts?.[0]?.date)
-
     return (
         <>
-            <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 relative z-0">
 
                 <div className="card card-stat rounded-3xl p-6 rise relative overflow-hidden"
                      style={{animationDelay: '0.1s'}}>

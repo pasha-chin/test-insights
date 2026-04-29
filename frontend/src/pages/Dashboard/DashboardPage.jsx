@@ -24,10 +24,10 @@ function DashboardPage() {
                 <Cards group={data?.group} report={data?.report}/>
                 <DynamicOfEngagementByDay report={data?.report}/>
                 <section className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                    <TopPosts />
-                    <TypeContent />
+                    <TopPosts report={data?.report} />
+                    <TypeContent report={data?.report} />
                 </section>
-                <ListTopPosts />
+                <ListTopPosts report={data?.report} />
                 <FooterDashboard />
             </div>
         </>
