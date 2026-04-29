@@ -11,14 +11,17 @@ const PORT = process.env.PORT || 3000;
 app.use( cors() );
 app.use( express.json() );
 
-app.get('/health', healthHandler);
+const router = express.Router();
 
-app.post( '/analyze', analyzeHandler);
+router.get('/health', healthHandler);
 
-app.get('/report/:groupId', reportHandler);
+router.post('/analyze', analyzeHandler);
 
-app.get('/export/:groupId', exportHandler);
+router.get('/report/:groupId', reportHandler);
 
+router.get('/export/:groupId', exportHandler);
+
+app.use('/api/v1', router);
 
 app.use((err, req, res, next) => {
     logger.error(err.message);

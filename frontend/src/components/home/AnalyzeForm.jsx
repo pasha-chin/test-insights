@@ -1,4 +1,6 @@
 import { useState } from 'react';
+
+import { ArrowRight } from "../../icons/ArrowRight";
 export default function AnalyzeForm() {
 
     const [community, setCommunity] = useState('');
@@ -9,6 +11,8 @@ export default function AnalyzeForm() {
     const [report, setReport] = useState(null);
 
     const handleSubmit = async (e) => {
+
+        console.log('submit fired');
         e.preventDefault();
 
         setError(null);
@@ -16,10 +20,14 @@ export default function AnalyzeForm() {
         setLoading(true);
 
         try {
-            const response = await fetch('/analyze', {
+            const response = await fetch('/api/v1/analyze', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ groupId: community, from: dateFrom, to: dateTo }),
+                body: JSON.stringify({
+                    groupId: community,
+                    from: Math.floor(new Date(dateFrom).getTime() / 1000),
+                    to: Math.floor(new Date(dateTo).getTime() / 1000),
+                }),
             });
 
             if( !response.ok ) {
@@ -30,6 +38,8 @@ export default function AnalyzeForm() {
             const data = await response.json();
             setReport(data);
 
+            console.log('report:', data);
+
         } catch (err) {
             setError(err.message);
         } finally {
@@ -39,7 +49,7 @@ export default function AnalyzeForm() {
 
     return (
         <>
-            <div className="card rounded-3xl p-7 md:p-9 rise" style={{animationDelay: '0.4s'}}>
+            <form onSubmit={handleSubmit} className="card rounded-3xl p-7 md:p-9 rise" style={{animationDelay: '0.4s'}}>
 
                 <div className="flex items-baseline justify-between mb-3">
                     <label htmlFor="community" className="text-sm font-medium">
@@ -127,14 +137,10 @@ export default function AnalyzeForm() {
                 <button
                     className="btn-primary w-full text-white font-medium py-4 rounded-2xl flex items-center justify-center gap-2 group">
                     <span className="text-base">Анализировать</span>
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-                         className="transition-transform group-hover:translate-x-1">
-                        <path d="M3 9h12m0 0l-5-5m5 5l-5 5" stroke="currentColor" stroke-width="1.8"
-                              stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <ArrowRight />
                 </button>
 
-            </div>
+            </form>
 
             <p className="rise text-center text-xs mt-6" style={{color: 'var(--ink-soft)', animationDelay: '0.5s'}}>
                 Анализ занимает до 30&nbsp;секунд — без регистрации.
