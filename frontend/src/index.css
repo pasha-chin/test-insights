@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+:root {
+    --cream: #faf6f0;
+    --peach: #ffd9c4;
+    --peach-deep: #ff9d76;
+    --lavender: #e8e0f5;
+    --mint: #d4ebe0;
+    --rose: #f5d6d6;
+    --ink: #2a2520;
+    --ink-soft: #6b5f55;
+    --line: #ebe2d4;
+}
+
+html {
+    overflow: hidden;
+}
+
+body {
+    font-family: 'Inter Tight', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    font-feature-settings: "ss01", "cv11";
+}
+
+.font-display {
+    font-family: 'Fraunces', serif;
+    font-optical-sizing: auto;
+}
+
+/* Зернистая текстура поверх фона */
+.grain::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Декоративные пастельные пятна */
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Кастомный input даты — иконка календаря */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.45;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Тонкая анимация мерцающей точки */
+@keyframes pulse-soft {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+}
+.pulse-dot {
+    animation: pulse-soft 2.4s ease-in-out infinite;
+}
+
+/* Плавное появление */
+@keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.rise { animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; }
+
+/* Hover-эффект чипов */
+.chip {
+    transition: all 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.chip:hover {
+    transform: translateY(-2px) rotate(-1deg);
+}
+
+/* Плавная заливка кнопки */
+.btn-primary {
+    background: linear-gradient(135deg, #ff9d76 0%, #ffb89a 100%);
+    transition: all 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+    box-shadow: 0 1px 2px rgba(255, 157, 118, 0.3), 0 8px 24px -8px rgba(255, 157, 118, 0.5);
+}
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(255, 157, 118, 0.35), 0 16px 32px -10px rgba(255, 157, 118, 0.55);
+}
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Поля ввода */
+.field {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--line);
+    transition: all 0.25s ease;
+}
+.field:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: #d6c9b3;
+}
+.field:focus {
+    background: #ffffff;
+    border-color: var(--peach-deep);
+    box-shadow: 0 0 0 4px rgba(255, 157, 118, 0.15);
+    outline: none;
+}
+
+/* Карточка */
+.card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(235, 226, 212, 0.8);
+    box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.9) inset,
+            0 30px 60px -30px rgba(42, 37, 32, 0.15),
+            0 8px 24px -12px rgba(42, 37, 32, 0.08);
+}
+
+/* Декоративный подчёркивающий штрих под заголовком */
+.underline-stroke {
+    position: relative;
+    display: inline-block;
+}
+.underline-stroke::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -8px;
+    height: 8px;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 8' preserveAspectRatio='none'><path d='M0,4 Q75,0 150,4 T300,4' stroke='%23ff9d76' stroke-width='2' fill='none' stroke-linecap='round'/></svg>") no-repeat center / 100% 100%;
+}

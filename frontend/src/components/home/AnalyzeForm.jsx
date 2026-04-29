@@ -1,0 +1,144 @@
+import { useState } from 'react';
+export default function AnalyzeForm() {
+
+    const [community, setCommunity] = useState('');
+    const [dateFrom, setDateFrom] = useState('2026-01-16');
+    const [dateTo, setDateTo] = useState('2026-04-16');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [report, setReport] = useState(null);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        setError(null);
+        setReport(null);
+        setLoading(true);
+
+        try {
+            const response = await fetch('/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ groupId: community, from: dateFrom, to: dateTo }),
+            });
+
+            if( !response.ok ) {
+                const data = await response.json();
+                throw new Error(data.error || 'Ошибка сервера');
+            }
+
+            const data = await response.json();
+            setReport(data);
+
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <>
+            <div className="card rounded-3xl p-7 md:p-9 rise" style={{animationDelay: '0.4s'}}>
+
+                <div className="flex items-baseline justify-between mb-3">
+                    <label htmlFor="community" className="text-sm font-medium">
+                        ID или имя сообщества
+                    </label>
+                    <span className="text-[11px] tracking-wider uppercase"
+                          style={{color: 'var(--ink-soft)'}}>шаг 1</span>
+                </div>
+
+                <div className="relative mb-4">
+                    <span
+                        className="absolute left-4 top-1/2 -translate-y-1/2 font-display italic text-base pointer-events-none"
+                        style={{color: 'var(--ink-soft)'}}>vk.com /</span>
+                    <input
+                        type="text"
+                        id="community"
+                        placeholder="durov"
+                        value={community}
+                        onChange={(e) => setCommunity(e.target.value)}
+                        className="field w-full rounded-2xl pl-[88px] pr-4 py-3.5 text-base placeholder:text-stone-400"
+                    />
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 mb-8">
+                    <span className="text-xs mr-1" style={{color: 'var(--ink-soft)'}}>Попробуйте:</span>
+                    <button className="chip text-sm px-3 py-1 rounded-full font-medium"
+                            style={{background: 'var(--peach)', color: '#8b3a1a'}}>
+                        durov
+                    </button>
+                    <button className="chip text-sm px-3 py-1 rounded-full font-medium"
+                            style={{background: 'var(--lavender)', color: '#4a3b6b'}}>
+                        vk
+                    </button>
+                    <button className="chip text-sm px-3 py-1 rounded-full font-medium"
+                            style={{background: 'var(--mint)', color: '#2d6a4f'}}>
+                        mdk
+                    </button>
+                </div>
+
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="flex-1 h-px" style={{background: 'var(--line)'}}></div>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <circle cx="8" cy="8" r="1.5" fill="var(--peach-deep)"/>
+                        <circle cx="2" cy="8" r="1" fill="var(--ink-soft)" opacity="0.4"/>
+                        <circle cx="14" cy="8" r="1" fill="var(--ink-soft)" opacity="0.4"/>
+                    </svg>
+                    <div className="flex-1 h-px" style={{background: 'var(--line)'}}></div>
+                </div>
+
+                <div className="flex items-baseline justify-between mb-3">
+                        <span className="text-sm font-medium">
+                            Период анализа
+                        </span>
+                    <span className="text-[11px] tracking-wider uppercase"
+                          style={{color: 'var(--ink-soft)'}}>шаг 2</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+                    <div>
+                        <label htmlFor="date-from" className="block text-xs mb-1.5" style={{color: 'var(--ink-soft)'}}>
+                            Начало
+                        </label>
+                        <input
+                            type="date"
+                            id="date-from"
+                            value={dateFrom}
+                            onChange={(e) => setDateFrom(e.target.value)}
+                            className="field w-full rounded-2xl px-4 py-3 text-base"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="date-to" className="block text-xs mb-1.5" style={{color: 'var(--ink-soft)'}}>
+                            Конец
+                        </label>
+                        <input
+                            type="date"
+                            id="date-to"
+                            value={dateTo}
+                            onChange={(e) => setDateTo(e.target.value)}
+                            className="field w-full rounded-2xl px-4 py-3 text-base"
+                        />
+                    </div>
+                </div>
+
+                <button
+                    className="btn-primary w-full text-white font-medium py-4 rounded-2xl flex items-center justify-center gap-2 group">
+                    <span className="text-base">Анализировать</span>
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
+                         className="transition-transform group-hover:translate-x-1">
+                        <path d="M3 9h12m0 0l-5-5m5 5l-5 5" stroke="currentColor" stroke-width="1.8"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+
+            </div>
+
+            <p className="rise text-center text-xs mt-6" style={{color: 'var(--ink-soft)', animationDelay: '0.5s'}}>
+                Анализ занимает до 30&nbsp;секунд — без регистрации.
+            </p>
+        </>
+    )
+}
