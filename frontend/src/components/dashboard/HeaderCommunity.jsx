@@ -23,6 +23,8 @@ function HeaderCommunity( { group, from, to } ) {
                                 <img
                                     src={group.photo_200}
                                     alt={group.name}
+                                    width={80}
+                                    height={80}
                                     className="w-20 h-20 rounded-2xl object-cover"
                                 />
                             ) : (

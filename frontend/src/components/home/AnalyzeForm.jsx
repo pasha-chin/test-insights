@@ -36,6 +36,7 @@ export default function AnalyzeForm() {
             }
 
             const data = await response.json();
+            sessionStorage.setItem('dashboardData', JSON.stringify({ data, from: dateFrom, to: dateTo }))
             navigate(`/dashboard/${community}`, {
                 state: {
                     data,
@@ -144,8 +145,18 @@ export default function AnalyzeForm() {
                     </div>
                 </div>
 
+                {error && (
+                    <div className="mb-4 px-4 py-3 rounded-2xl text-sm"
+                         style={{background: 'var(--curlshop)', color: 'white'}}>
+                        {error === '429'
+                            ? '⏳ VK API перегружен, подождите минуту и попробуйте снова.'
+                            : `⚠️ ${error}`
+                        }
+                    </div>
+                )}
+
                 <button
-                    className="btn-primary w-full text-white font-medium py-4 rounded-2xl flex items-center justify-center gap-2 group">
+                    className="btn-primary w-full text-white font-medium py-4 rounded-2xl flex items-center justify-center gap-2 group hover:opacity-80 cursor-pointer">
                     <span className="text-base">Анализировать</span>
                     <IconArrowRight />
                 </button>

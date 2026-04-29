@@ -4,7 +4,7 @@ function ListTopPosts( {report} ) {
 
     const [sortBy, setSortBy] = useState('engagement');
 
-    const sortedPosts = [...report.topPosts].sort((a, b) => {
+    const sortedPosts = [...(report?.topPosts ?? [])].sort((a, b) => {
         if( sortBy === 'likes' ) {
             return b.likes - a.likes;
         }
@@ -17,7 +17,7 @@ function ListTopPosts( {report} ) {
 
     return (
         <>
-            <section className="card rounded-3xl p-6 md:p-10 mb-6 mt-6 rise" style={{animationDelay: '0.1s'}}>
+            <section className="card rounded-3xl p-6 md:p-10 mb-6 mt-6 rise" style={{animationDelay: '0.1s', minHeight: '600px'}}>
 
                 <div className="flex items-baseline justify-between mb-2 flex-wrap gap-2">
                     <div>
