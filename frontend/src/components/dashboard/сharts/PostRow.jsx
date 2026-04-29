@@ -12,7 +12,7 @@ function PostRow({ post, index }) {
                     №{String(index + 1).padStart(2, '0')}
                 </div>
 
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="flex-1 min-w-0 pr-4 w-full">
                     <p className="text-[15px] leading-snug truncate" style={{color: 'var(--ink)'}}>
                         {post.text}
                     </p>

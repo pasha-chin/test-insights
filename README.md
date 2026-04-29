@@ -35,6 +35,28 @@ cd backend
 npm install
 npm run dev
 ```
+## Зависимости
+
+### Redis
+Кэш работает через Redis. Установи локально:
+
+**macOS:**
+```bash
+brew install redis
+brew services start redis
+```
+
+**Ubuntu/Debian:**
+```bash
+sudo apt install redis-server
+sudo systemctl start redis
+```
+
+**Windows: Используй WSL или Docker:**
+```bash
+docker run -d -p 6379:6379 redis
+```
+
 ### Frontend
 ```bash
 cd frontend
