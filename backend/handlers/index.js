@@ -8,7 +8,7 @@ async function analyzeHandler(req, res) {
     const { groupId, from, to } = req.body;
 
     if( !groupId || !from || !to ) {
-        return res.status(400).json({ error: 'groupId, from, to обязательны' });
+        return res.status(400).json({ error: 'ID или имя сообщества, начало и конец периода обязательны' });
     }
 
     try {
@@ -18,7 +18,6 @@ async function analyzeHandler(req, res) {
         const toTs = Number(to);
         const cacheKey = `posts:${group.id}:${fromTs}:${toTs}`;
 
-
         let posts = await getCache(cacheKey);
         if( !posts ) {
             const ownerId = -group.id;
@@ -26,7 +25,6 @@ async function analyzeHandler(req, res) {
             await setCache(cacheKey, posts);
         }
 
-        // const filtered = posts.filter(p => p.date >= fromTs && p.date <= toTs);
         const report = analyzeWallPosts(posts);
 
         res.json({ group, report });
@@ -67,12 +65,18 @@ async function exportHandler(req, res) {
         return res.status(400).json({ error: 'groupId обязателен' });
     }
 
-    const cacheKey = `report_${groupId}_${from}_${to}`;
-    const cached = getCache(cacheKey);
+    const fromTs = Math.floor(new Date(from).getTime() / 1000);
+    const toTs = Math.floor(new Date(to).getTime() / 1000);
 
-    if( !cached ) {
+    const fileName = `report_${groupId}_${fromTs}_${toTs}`;
+    const cacheKey = `posts:${groupId}:${fromTs}:${toTs}`;
+    const cached = await getCache(cacheKey);
+
+    if( !cached || Object.keys(cached).length === 0 ) {
         return res.status(404).json({ error: 'Данные не найдены. Сначала выполните /analyze' });
     }
+
+    const report = analyzeWallPosts(cached);
 
     const validFormats = ['csv', 'json'];
     const exportFormat = validFormats.includes(format) ? format : 'json';
@@ -80,16 +84,18 @@ async function exportHandler(req, res) {
     if( exportFormat === 'json' ) {
         res.setHeader('Content-Disposition', `attachment; filename="report_${groupId}.json"`);
         res.setHeader('Content-Type', 'application/json');
-        return res.json(cached);
+        return res.json(report);
     }
 
     if( exportFormat === 'csv' ) {
-        res.setHeader('Content-Disposition', `attachment; filename="report_${groupId}.csv"`);
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}.csv"`);
         res.setHeader('Content-Type', 'text/csv');
 
-        const rows = cached.topPosts.map(post =>
-            `${post.id},${post.date},${post.likes},${post.comments},${post.reposts},${post.engagement}`
-        );
+        const rows = (report.topPosts || []).map(post => {
+            const date = new Date(post.date).toLocaleDateString('ru-RU');
+            console.log('post.date sample:', report.topPosts[0]?.date);
+            return `${post.id},${date},${post.likes},${post.comments},${post.reposts},${post.engagement}`;
+        });
 
         const header = 'id,date,likes,comments,reposts,engagement';
         const csv = [header, ...rows].join('\n');

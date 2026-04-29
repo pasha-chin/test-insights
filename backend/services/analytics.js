@@ -70,6 +70,38 @@ function getDailyActivity(posts) {
     {});
 }
 
+function getDailyEngagement(posts) {
+    const sums = {};
+    const counts = {};
+
+    posts.forEach(
+        post => {
+            const date = new Date(post.date * 1000).toISOString().split('T')[0];
+            sums[date] = (sums[date] || 0) + (post.likes.count + post.comments.count + post.reposts.count);
+            counts[date] = (counts[date] || 0) + 1;
+        }
+    );
+
+    return Object.fromEntries(
+        Object.keys(sums).map(date => [date, Math.round(sums[date] / counts[date])])
+    );
+}
+
+function getBusiestDay(posts) {
+    const daily = getDailyActivity(posts);
+    const [date, count] = Object.entries(daily).sort( (a, b) => b[1] - a[1] )[0] || [];
+
+    if( !date ) {
+        return null;
+    }
+
+    return {
+        date: new Date(date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }),
+        year: new Date(date).getFullYear(),
+        count
+    };
+}
+
 function analyzeWallPosts(posts) {
     return {
         totalPosts: posts.length,
@@ -77,6 +109,8 @@ function analyzeWallPosts(posts) {
         topPosts: getTopPosts(posts),
         typeDistribution: getTypeDistribution(posts),
         dailyActivity: getDailyActivity(posts),
+        dailyEngagement: getDailyEngagement(posts),
+        busiestDay: getBusiestDay(posts),
     };
 }
 
@@ -88,5 +122,7 @@ export  {
     getAvgEngagement,
     getTypeDistribution,
     getDailyActivity,
+    getBusiestDay,
+    getDailyEngagement,
     analyzeWallPosts
 };

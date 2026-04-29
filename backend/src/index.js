@@ -14,11 +14,8 @@ app.use( express.json() );
 const router = express.Router();
 
 router.get('/health', healthHandler);
-
 router.post('/analyze', analyzeHandler);
-
 router.get('/report/:groupId', reportHandler);
-
 router.get('/export/:groupId', exportHandler);
 
 app.use('/api/v1', router);
